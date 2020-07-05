@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '0.4.21'
+}
+
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.19.5'
+}
+
+intellij {
+    localPath "/mnt/DATA/software/idea-IC"
+    plugins 'java', 'copyright'
+    buildSearchableOptions.enabled = false
+}
+
+
+

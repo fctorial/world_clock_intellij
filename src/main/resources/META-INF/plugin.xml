@@ -1,0 +1,21 @@
+<idea-plugin>
+    <id>FILE_EDITOR</id>
+    <vendor>asdf</vendor>
+
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.xdebugger</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <virtualFileSystem id="VFS" implementationClass="VFS" />
+        <fileEditorProvider implementation="EdtrP"/>
+        <toolWindow factoryClass="sidebar.TWF" id="TW" anchor="left" secondary="true" />
+    </extensions>
+
+    <actions>
+        <action id="m.OpenAction" class="OA"
+                text="RUN FILE 1" >
+        </action>
+
+    </actions>
+
+</idea-plugin>
