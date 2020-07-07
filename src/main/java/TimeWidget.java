@@ -48,7 +48,8 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
                 final var chooser = new ZoneChooser(TimeWidget.this::setZone);
                 TimeWidget.this.popup = new JBPopupMenu();
                 TimeWidget.this.popup.add(chooser);
-                TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY()-200);
+                TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY());
+                TimeWidget.this.popup.requestFocus();
             }
 
             @Override
@@ -73,13 +74,13 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
         if (PropertiesComponent.getInstance().getValues("pinnedZones") == null) {
             PropertiesComponent.getInstance().setValues("pinnedZones", new String[]{"EST", "UTC"});
         }
-
     }
 
     Void setZone(String z) {
-        var win = SwingUtilities.windowForComponent(this.popup.getComponent());
-        win.dispose();
+//        var win = SwingUtilities.windowForComponent(this.popup.getComponent());
+//        win.dispose();
 
+        this.popup.setVisible(false);
         this.popup = null;
         if (z != null) {
             PropertiesComponent.getInstance().setValue("selectedZone", z);
@@ -87,12 +88,12 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
             this.setToolTipText(z);
         }
         this.update();
-        SwingUtilities.invokeLater(() -> this.dispatchEvent(new MouseEvent(this, 12, 0, 0, 5, 5, 0, true, 1)));
+//        SwingUtilities.invokeLater(() -> this.dispatchEvent(new MouseEvent(this, 12, 0, 0, 5, 5, 0, true, 1)));
         return null;
     }
 
     void update() {
-        this.setText(this.fmt.format(new Date()));
+        this.setText(" " + this.fmt.format(new Date()) + " ");
     }
 
     @Override

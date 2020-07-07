@@ -1,24 +1,20 @@
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.util.concurrency.EdtExecutorService;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -31,7 +27,7 @@ public class ZoneChooser extends JPanel {
     static final String[] timezones = TimeZone.getAvailableIDs();
     private final JScrollPane foC;
     private final JBScrollPane pC;
-    private Thread searchTask;
+    private ScheduledFuture<?> searchTask;
 
     ZoneChooser(Function<String, Void> cb) {
         this.cb = cb;
@@ -69,6 +65,7 @@ public class ZoneChooser extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
+                SwingUtilities.invokeLater(filteredOpts::requestFocusInWindow);
             }
 
             @Override
@@ -94,14 +91,12 @@ public class ZoneChooser extends JPanel {
 
             void f() {
                 if (ZoneChooser.this.searchTask != null) {
-//                    ZoneChooser.this.searchTask.cancel(true);
-                    ZoneChooser.this.searchTask.interrupt();
+                    ZoneChooser.this.searchTask.cancel(true);
                     ZoneChooser.this.searchTask = null;
                 }
-                ZoneChooser.this.searchTask = EdtExecutorService2.getScheduledExecutorInstance().schedule(() -> {
+                ZoneChooser.this.searchTask = EdtExecutorService.getScheduledExecutorInstance().schedule(() -> {
                     var qs = tv.getText().toLowerCase().split(" ");
                     var res = new ArrayList<String>();
-                    var found = 0;
                     for (String zone : timezones) {
                         var matches = true;
                         for (var q : qs) {
@@ -112,7 +107,6 @@ public class ZoneChooser extends JPanel {
                         }
                         if (matches) {
                             res.add(zone);
-                            found++;
                         }
                     }
 
@@ -165,7 +159,8 @@ public class ZoneChooser extends JPanel {
         pinned.setListData(PropertiesComponent.getInstance().getValues("pinnedZones"));
 
         this.setLayout(null);
-        this.foC = new JBScrollPane(filteredOpts);
+        this.foC = new MJScrollPane(filteredOpts);
+        foC.setWheelScrollingEnabled(true);
         this.foC.setPreferredSize(new Dimension(200, 250));
         add(this.foC);
         add(this.tv);
@@ -208,7 +203,6 @@ public class ZoneChooser extends JPanel {
         setPreferredSize(new Dimension(width, height));
         if (this.getWin() != null) {
             this.getWin().setSize(new Dimension(width, height));
-//            this.getWin().setLocation(x, bottom - height);
         }
         var y = PADDING;
         for (var c : cs) {
