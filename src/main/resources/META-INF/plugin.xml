@@ -1,6 +1,7 @@
-<idea-plugin>
-    <id>FILE_EDITOR</id>
-    <vendor>asdf</vendor>
+<idea-plugin url="https://github.com/fctorial/world_clock_intellij">
+    <id>fctorial.worldClock</id>
+    <name>World Clock</name>
+    <vendor email="fctorial@gmail.com">fctorial</vendor>
 
     <depends>com.intellij.modules.lang</depends>
 

@@ -1,4 +1,3 @@
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.CustomStatusBarWidget;
 import com.intellij.openapi.wm.StatusBar;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
     private ScheduledFuture task;
 
-    static String TIME_FORMAT = "HH:mm:ss";
+    static String TIME_FORMAT = "HH:mm";
     SimpleDateFormat fmtM = new SimpleDateFormat(TIME_FORMAT);
     ArrayList<SimpleDateFormat> fmtP = new ArrayList<>();
     private JBPopupMenu popup;
@@ -38,7 +37,6 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
 
     @Override
     public void install(@NotNull StatusBar statusBar) {
-        MemoryUsagePanel m;
         initFmts();
         this.setEditable(false);
 
@@ -64,7 +62,6 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
                         TimeWidget.this.setZone(null);
                     }
                 });
-                TimeWidget.this.popup.requestFocus();
             }
 
             @Override
@@ -79,7 +76,7 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
             @Override
             public void mouseExited(MouseEvent mouseEvent) {}
         });
-        this.task = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(this::update, 0, 1, TimeUnit.SECONDS);
+        this.task = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(this::update, 0, 20, TimeUnit.SECONDS);
     }
 
     private void initFmts() {
@@ -104,7 +101,7 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
     }
 
     void update() {
-        this.setText("  " + this.fmtM.getTimeZone().getID() + ": " + this.fmtM.format(new Date()) + "  ");
+        this.setText(" " + this.fmtM.getTimeZone().getID() + ": " + this.fmtM.format(new Date()) + " ");
         StringBuilder tooltip = new StringBuilder();
         for (var fmt : this.fmtP) {
             tooltip.append(fmt.getTimeZone().getID()).append(": ").append(fmt.format(new Date())).append("<br>");
@@ -114,6 +111,8 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
 
     @Override
     public void dispose() {
+        System.out.println("===========================================");
+        System.out.println(hashCode());
         if (this.task != null) {
             this.task.cancel(false);
             this.task = null;

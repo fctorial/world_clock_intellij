@@ -7,8 +7,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -59,7 +61,6 @@ public class ZoneChooser extends JPanel {
 
             @Override
             public void mouseEntered(MouseEvent mouseEvent) {
-                SwingUtilities.invokeLater(filteredOpts::requestFocusInWindow);
             }
 
             @Override
@@ -149,7 +150,7 @@ public class ZoneChooser extends JPanel {
         pinned.setListData(listToArray(Settings.get().pinnedZones));
 
         this.setLayout(null);
-        this.foC = new MJScrollPane(filteredOpts);
+        this.foC = new JBScrollPane(filteredOpts);
         foC.setWheelScrollingEnabled(true);
         this.foC.setPreferredSize(new Dimension(200, 250));
         add(this.foC);
@@ -160,6 +161,20 @@ public class ZoneChooser extends JPanel {
         add(this.pC);
 
         doLayout2();
+    }
+
+    @Override
+    protected void processMouseWheelEvent(MouseWheelEvent e) {
+
+    }
+
+    @Override
+    protected void processKeyEvent(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            System.out.println("enter");
+        } else {
+            this.tv.dispatchEvent(e);
+        }
     }
 
     private static boolean aContains(List<String> arr, String zone) {
