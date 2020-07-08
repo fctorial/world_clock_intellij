@@ -7,9 +7,12 @@ import com.intellij.util.concurrency.EdtExecutorService;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
@@ -18,7 +21,9 @@ import java.util.concurrent.TimeUnit;
 public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
     private ScheduledFuture task;
 
-    SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss");
+    static String TIME_FORMAT = "HH:mm:ss";
+    SimpleDateFormat fmtM = new SimpleDateFormat(TIME_FORMAT);
+    ArrayList<SimpleDateFormat> fmtP = new ArrayList<>();
     private JBPopupMenu popup;
 
     @Override
@@ -33,10 +38,8 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
 
     @Override
     public void install(@NotNull StatusBar statusBar) {
-        registerDefaults();
-        var _z = PropertiesComponent.getInstance().getValue("selectedZone");
-        this.fmt.setTimeZone(TimeZone.getTimeZone(_z));
-        this.setToolTipText(_z);
+        MemoryUsagePanel m;
+        initFmts();
         this.setEditable(false);
 
         this.addMouseListener(new MouseListener() {
@@ -49,6 +52,18 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
                 TimeWidget.this.popup = new JBPopupMenu();
                 TimeWidget.this.popup.add(chooser);
                 TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY());
+                TimeWidget.this.popup.addPopupMenuListener(new PopupMenuListener() {
+                    @Override
+                    public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {}
+
+                    @Override
+                    public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {}
+
+                    @Override
+                    public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
+                        TimeWidget.this.setZone(null);
+                    }
+                });
                 TimeWidget.this.popup.requestFocus();
             }
 
@@ -67,33 +82,34 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
         this.task = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(this::update, 0, 1, TimeUnit.SECONDS);
     }
 
-    private void registerDefaults() {
-        if (PropertiesComponent.getInstance().getValue("selectedZone") == null) {
-            PropertiesComponent.getInstance().setValue("selectedZone", "UTC");
-        }
-        if (PropertiesComponent.getInstance().getValues("pinnedZones") == null) {
-            PropertiesComponent.getInstance().setValues("pinnedZones", new String[]{"EST", "UTC"});
+    private void initFmts() {
+        this.fmtM.setTimeZone(TimeZone.getTimeZone(Settings.get().selectedZone));
+        fmtP.clear();
+        for (var z : Settings.get().pinnedZones) {
+            var fmt = new SimpleDateFormat(TIME_FORMAT);
+            fmt.setTimeZone(TimeZone.getTimeZone(z));
+            this.fmtP.add(fmt);
         }
     }
 
     Void setZone(String z) {
-//        var win = SwingUtilities.windowForComponent(this.popup.getComponent());
-//        win.dispose();
-
         this.popup.setVisible(false);
         this.popup = null;
         if (z != null) {
-            PropertiesComponent.getInstance().setValue("selectedZone", z);
-            this.fmt.setTimeZone(TimeZone.getTimeZone(z));
-            this.setToolTipText(z);
+            Settings.get().selectedZone = z;
         }
+        initFmts();
         this.update();
-//        SwingUtilities.invokeLater(() -> this.dispatchEvent(new MouseEvent(this, 12, 0, 0, 5, 5, 0, true, 1)));
         return null;
     }
 
     void update() {
-        this.setText(" " + this.fmt.format(new Date()) + " ");
+        this.setText("  " + this.fmtM.getTimeZone().getID() + ": " + this.fmtM.format(new Date()) + "  ");
+        StringBuilder tooltip = new StringBuilder();
+        for (var fmt : this.fmtP) {
+            tooltip.append(fmt.getTimeZone().getID()).append(": ").append(fmt.format(new Date())).append("<br>");
+        }
+        this.setToolTipText(tooltip.toString());
     }
 
     @Override

@@ -1,4 +1,3 @@
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
@@ -11,7 +10,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
@@ -42,13 +40,9 @@ public class ZoneChooser extends JPanel {
                     if (ev.getButton() == 1) {
                         ZoneChooser.this.cb.apply(zone);
                     } else {
-                        var currPinned = PropertiesComponent.getInstance().getValues("pinnedZones");
-                        if (! aContains(currPinned, zone)) {
-                            var lst = new ArrayList<>(Arrays.asList(currPinned));
-                            lst.add(zone);
-                            var arr = listToArray(lst);
-                            pinned.setListData(arr);
-                            PropertiesComponent.getInstance().setValues("pinnedZones", arr);
+                        if (! aContains(Settings.get().pinnedZones, zone)) {
+                            Settings.get().pinnedZones.add(zone);
+                            pinned.setListData(listToArray(Settings.get().pinnedZones));
                             doLayout2();
                         }
                     }
@@ -128,13 +122,9 @@ public class ZoneChooser extends JPanel {
                     if (ev.getButton() == 1) {
                         ZoneChooser.this.cb.apply(zone);
                     } else {
-                        var currPinned = PropertiesComponent.getInstance().getValues("pinnedZones");
-                        if (aContains(currPinned, zone)) {
-                            var lst = new ArrayList<>(Arrays.asList(currPinned));
-                            lst.remove(zone);
-                            var arr = listToArray(lst);
-                            pinned.setListData(arr);
-                            PropertiesComponent.getInstance().setValues("pinnedZones", arr);
+                        if (aContains(Settings.get().pinnedZones, zone)) {
+                            Settings.get().pinnedZones.remove(zone);
+                            pinned.setListData(listToArray(Settings.get().pinnedZones));
                             doLayout2();
                         }
                     }
@@ -156,7 +146,7 @@ public class ZoneChooser extends JPanel {
             public void mouseExited(MouseEvent mouseEvent) {
             }
         });
-        pinned.setListData(PropertiesComponent.getInstance().getValues("pinnedZones"));
+        pinned.setListData(listToArray(Settings.get().pinnedZones));
 
         this.setLayout(null);
         this.foC = new MJScrollPane(filteredOpts);
@@ -172,7 +162,7 @@ public class ZoneChooser extends JPanel {
         doLayout2();
     }
 
-    private static boolean aContains(String[] arr, String zone) {
+    private static boolean aContains(List<String> arr, String zone) {
         for (var e : arr) {
             if (e.equals(zone)) {
                 return true;
