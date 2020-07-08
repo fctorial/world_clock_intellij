@@ -1,13 +1,26 @@
 <idea-plugin url="https://github.com/fctorial/world_clock_intellij">
     <id>fctorial.worldClock</id>
     <name>World Clock</name>
+    <description><![CDATA[
+Displays a clock widget in the bottom status bar.
+
+clicking it opens a popup for choosing timezone
+
+click on a timezone to select it
+
+right click on a timezone to pin it
+
+right click on a pinned zone to unpin it
+
+times in pinned zones are displayed in the tooltip of this widget
+]]></description>
     <vendor email="fctorial@gmail.com">fctorial</vendor>
 
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="Settings" />
-        <statusBarWidgetFactory id="TimeWidget" implementation="TimeWidgetFactory" />
+        <applicationService serviceImplementation="Settings"/>
+        <statusBarWidgetFactory id="TimeWidget" implementation="TimeWidgetFactory"/>
     </extensions>
 
 </idea-plugin>
