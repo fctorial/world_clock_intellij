@@ -30,7 +30,6 @@ public class TimeWidgetFactory implements StatusBarWidgetFactory, LightEditCompa
 
     @Override
     public void disposeWidget(@NotNull StatusBarWidget statusBarWidget) {
-        Disposer.dispose(statusBarWidget);
     }
 
     @Override

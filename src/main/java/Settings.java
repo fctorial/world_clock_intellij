@@ -10,9 +10,9 @@ import java.util.Collections;
 
 @State(name = "ActivityManager", storages = @Storage(value = "Clock.xml"))
 public class Settings implements PersistentStateComponent<Settings> {
-    String selectedZone = "UTC";
+    public String selectedZone = "UTC";
 
-    ArrayList<String> pinnedZones = new ArrayList<>();
+    public ArrayList<String> pinnedZones = new ArrayList<>();
     {
         Collections.addAll(pinnedZones, "EST", "IST");
     }
