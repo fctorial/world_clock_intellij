@@ -1,16 +1,13 @@
-import com.intellij.ui.components.JBList;
-import com.intellij.ui.components.JBScrollPane;
-import com.intellij.ui.components.JBTextField;
 import com.intellij.util.concurrency.EdtExecutorService;
+//import mock.EdtExecutorService;
+//import mock.Settings;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -26,12 +23,14 @@ public class ZoneChooser extends JPanel {
 
     static final String[] timezones = TimeZone.getAvailableIDs();
     private final JScrollPane foC;
-    private final JBScrollPane pC;
+    private final JScrollPane pC;
+
     private ScheduledFuture<?> searchTask;
+//    private Thread searchTask;
 
     ZoneChooser(Function<String, Void> cb) {
         this.cb = cb;
-        this.filteredOpts = new JBList<>();
+        this.filteredOpts = new JList<>();
         this.filteredOpts.addMouseListener(new MouseListener() {
 
             @Override
@@ -68,7 +67,7 @@ public class ZoneChooser extends JPanel {
             }
         });
 
-        this.tv = new JBTextField();
+        this.tv = new JTextField();
         this.tv.setPreferredSize(new Dimension(200, 30));
         this.tv.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -87,7 +86,10 @@ public class ZoneChooser extends JPanel {
             void f() {
                 if (ZoneChooser.this.searchTask != null) {
                     ZoneChooser.this.searchTask.cancel(true);
+//                    ZoneChooser.this.searchTask.interrupt();
+
                     ZoneChooser.this.searchTask = null;
+
                 }
                 ZoneChooser.this.searchTask = EdtExecutorService.getScheduledExecutorInstance().schedule(() -> {
                     var qs = tv.getText().toLowerCase().split(" ");
@@ -112,7 +114,7 @@ public class ZoneChooser extends JPanel {
             }
         });
 
-        this.pinned = new JBList<>();
+        this.pinned = new JList<>();
         this.pinned.addMouseListener(new MouseListener() {
 
             @Override
@@ -150,31 +152,18 @@ public class ZoneChooser extends JPanel {
         pinned.setListData(listToArray(Settings.get().pinnedZones));
 
         this.setLayout(null);
-        this.foC = new JBScrollPane(filteredOpts);
-        foC.setWheelScrollingEnabled(true);
+//        this.foC = new JBScrollPane(filteredOpts);
+        this.foC = new JScrollPane(filteredOpts);
         this.foC.setPreferredSize(new Dimension(200, 250));
         add(this.foC);
         add(this.tv);
         add(new JLabel("Pinned: "));
-        this.pC = new JBScrollPane(this.pinned);
+//        this.pC = new JBScrollPane(this.pinned);
+        this.pC = new JScrollPane(this.pinned);
         this.pC.setPreferredSize(new Dimension(200, 100));
         add(this.pC);
 
         doLayout2();
-    }
-
-    @Override
-    protected void processMouseWheelEvent(MouseWheelEvent e) {
-
-    }
-
-    @Override
-    protected void processKeyEvent(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            System.out.println("enter");
-        } else {
-            this.tv.dispatchEvent(e);
-        }
     }
 
     private static boolean aContains(List<String> arr, String zone) {
@@ -241,12 +230,11 @@ public class ZoneChooser extends JPanel {
             return null;
         }));
 
-
-        //Display the window.
         frame.pack();
         frame.setVisible(true);
         popup.show(frame, 300, 400);
         popup.getParent().setSize(popup.getPreferredSize());
     }
+
 }
 
