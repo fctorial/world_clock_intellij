@@ -3,24 +3,21 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.21'
 }
 
-version '0.9'
+version '0.11'
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'http://www.miglayout.com/mavensite/' }
 }
 
 dependencies {
     implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.19.5'
     compile group: 'net.java.dev.designgridlayout', name: 'designgridlayout', version: '1.11'
-//    implementation 'com.miglayout:miglayout-swing:4.3-SNAPSHOT' // group: 'com.miglayout', name: 'miglayout-swing'//, version: '4.0'
     implementation fileTree("lib")
 }
 
 intellij {
-    localPath "/mnt/DATA/software/idea-IC"
-    plugins 'java', 'copyright'
+    localPath "/mnt/DATA/software/idea-IU"
+    plugins 'java'
     buildSearchableOptions.enabled = false
 }
 

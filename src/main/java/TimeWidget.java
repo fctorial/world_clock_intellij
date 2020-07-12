@@ -1,7 +1,6 @@
 import com.intellij.openapi.ui.JBPopupMenu;
 import com.intellij.openapi.wm.CustomStatusBarWidget;
 import com.intellij.openapi.wm.StatusBar;
-import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.concurrency.EdtExecutorService;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
+public class TimeWidget extends JLabel implements CustomStatusBarWidget {
     private ScheduledFuture task;
 
     static String TIME_FORMAT = "HH:mm";
@@ -38,7 +37,6 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
     @Override
     public void install(@NotNull StatusBar statusBar) {
         initFmts();
-        this.setEditable(false);
 
         this.addMouseListener(new MouseListener() {
             @Override
@@ -95,8 +93,10 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
         if (z != null) {
             Settings.get().selectedZone = z;
         }
-        initFmts();
-        this.update();
+        for (var w : TimeWidgetFactory.activeWidgets) {
+            w.initFmts();
+            w.update();
+        }
         return null;
     }
 
@@ -111,8 +111,6 @@ public class TimeWidget extends JBTextArea implements CustomStatusBarWidget {
 
     @Override
     public void dispose() {
-        System.out.println("===========================================");
-        System.out.println(hashCode());
         if (this.task != null) {
             this.task.cancel(false);
             this.task = null;

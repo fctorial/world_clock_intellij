@@ -7,7 +7,11 @@ import com.intellij.openapi.wm.StatusBarWidgetFactory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class TimeWidgetFactory implements StatusBarWidgetFactory, LightEditCompatible {
+    static ArrayList<TimeWidget> activeWidgets = new ArrayList<>();
+
     @Override
     public @NotNull String getId() {
         return "TimeWidget";
@@ -30,11 +34,16 @@ public class TimeWidgetFactory implements StatusBarWidgetFactory, LightEditCompa
 
     @Override
     public void disposeWidget(@NotNull StatusBarWidget statusBarWidget) {
+        if (statusBarWidget instanceof TimeWidget)
+            activeWidgets.remove(statusBarWidget);
     }
 
     @Override
     public boolean canBeEnabledOn(@NotNull StatusBar statusBar) {
         return true;
+    }
+
+    void broadcastSettings(TimeWidget w) {
     }
 
 }

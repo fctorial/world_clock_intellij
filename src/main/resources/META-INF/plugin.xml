@@ -2,21 +2,26 @@
     <id>fctorial.worldClock</id>
     <name>World Clock</name>
     <description><![CDATA[
-Displays a clock widget in the bottom status bar.
+Displays a clock widget in the bottom status bar. <br>
 
-clicking it opens a popup for choosing timezone
+clicking it opens a popup for choosing timezone <br>
 
-click on a timezone to select it
+click on a timezone to select it <br>
 
-right click on a timezone to pin it
+right click on a timezone to pin it <br>
 
-right click on a pinned zone to unpin it
+right click on a pinned zone to unpin it <br>
 
-times in pinned zones are displayed in the tooltip of this widget
+times in pinned zones are displayed in the tooltip of this widget <br>
 ]]></description>
+
     <vendor email="fctorial@gmail.com">fctorial</vendor>
 
     <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="TimeWidgetFactory" />
+    </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="Settings"/>
