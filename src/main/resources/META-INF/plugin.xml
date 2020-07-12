@@ -15,13 +15,11 @@ right click on a pinned zone to unpin it <br>
 times in pinned zones are displayed in the tooltip of this widget <br>
 ]]></description>
 
+    <change-notes>Reload settings in all windows when a change is made in one</change-notes>
+
     <vendor email="fctorial@gmail.com">fctorial</vendor>
 
     <depends>com.intellij.modules.lang</depends>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="TimeWidgetFactory" />
-    </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="Settings"/>

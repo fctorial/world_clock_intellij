@@ -10,9 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.TeamNewPipe:NewPipeExtractor:v0.19.5'
-    compile group: 'net.java.dev.designgridlayout', name: 'designgridlayout', version: '1.11'
-    implementation fileTree("lib")
 }
 
 intellij {

@@ -29,7 +29,9 @@ public class TimeWidgetFactory implements StatusBarWidgetFactory, LightEditCompa
 
     @Override
     public @NotNull StatusBarWidget createWidget(@NotNull Project project) {
-        return new TimeWidget();
+        var w = new TimeWidget();
+        activeWidgets.add(w);
+        return w;
     }
 
     @Override
@@ -41,9 +43,6 @@ public class TimeWidgetFactory implements StatusBarWidgetFactory, LightEditCompa
     @Override
     public boolean canBeEnabledOn(@NotNull StatusBar statusBar) {
         return true;
-    }
-
-    void broadcastSettings(TimeWidget w) {
     }
 
 }
