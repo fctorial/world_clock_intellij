@@ -1,4 +1,7 @@
 import com.intellij.openapi.ui.JBPopupMenu;
+import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.wm.CustomStatusBarWidget;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.util.concurrency.EdtExecutorService;
@@ -50,10 +53,12 @@ public class TimeWidget extends JLabel implements CustomStatusBarWidget {
                 TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY());
                 TimeWidget.this.popup.addPopupMenuListener(new PopupMenuListener() {
                     @Override
-                    public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {}
+                    public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {
+                    }
 
                     @Override
-                    public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {}
+                    public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {
+                    }
 
                     @Override
                     public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
@@ -63,16 +68,20 @@ public class TimeWidget extends JLabel implements CustomStatusBarWidget {
             }
 
             @Override
-            public void mousePressed(MouseEvent mouseEvent) {}
+            public void mousePressed(MouseEvent mouseEvent) {
+            }
 
             @Override
-            public void mouseReleased(MouseEvent mouseEvent) {}
+            public void mouseReleased(MouseEvent mouseEvent) {
+            }
 
             @Override
-            public void mouseEntered(MouseEvent mouseEvent) {}
+            public void mouseEntered(MouseEvent mouseEvent) {
+            }
 
             @Override
-            public void mouseExited(MouseEvent mouseEvent) {}
+            public void mouseExited(MouseEvent mouseEvent) {
+            }
         });
         this.task = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(this::update, 0, 20, TimeUnit.SECONDS);
     }

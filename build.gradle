@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.intellij' version '0.4.21'
 }
 
-version '0.11'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -13,7 +13,7 @@ dependencies {
 }
 
 intellij {
-    localPath "/mnt/DATA/software/idea-IU"
+    localPath "/mnt/DATA/software/idea-IC"
     plugins 'java'
     buildSearchableOptions.enabled = false
 }

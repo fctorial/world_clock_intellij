@@ -1,6 +1,10 @@
 <idea-plugin url="https://github.com/fctorial/world_clock_intellij">
     <id>fctorial.worldClock</id>
     <name>World Clock</name>
+    <vendor email="fctorial@gmail.com">fctorial</vendor>
+    <depends>com.intellij.modules.platform</depends>
+    <idea-version since-build="162" until-build="202.*" />
+
     <description><![CDATA[
 Displays a clock widget in the bottom status bar. <br>
 
@@ -14,12 +18,7 @@ right click on a pinned zone to unpin it <br>
 
 times in pinned zones are displayed in the tooltip of this widget <br>
 ]]></description>
-
-    <change-notes>Reload settings in all windows when a change is made in one</change-notes>
-
-    <vendor email="fctorial@gmail.com">fctorial</vendor>
-
-    <depends>com.intellij.modules.lang</depends>
+    <change-notes>Use intellij speed search like project view</change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="Settings"/>
