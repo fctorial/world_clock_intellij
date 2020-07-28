@@ -25,7 +25,7 @@ public class TimeWidget extends JLabel implements CustomStatusBarWidget {
     static String TIME_FORMAT = "HH:mm";
     SimpleDateFormat fmtM = new SimpleDateFormat(TIME_FORMAT);
     ArrayList<SimpleDateFormat> fmtP = new ArrayList<>();
-    private JBPopupMenu popup;
+    private JBPopup popup;
 
     @Override
     public JComponent getComponent() {
@@ -48,40 +48,40 @@ public class TimeWidget extends JLabel implements CustomStatusBarWidget {
                     return;
                 }
                 final var chooser = new ZoneChooser(TimeWidget.this::setZone);
-                TimeWidget.this.popup = new JBPopupMenu();
-                TimeWidget.this.popup.add(chooser);
-                TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY());
-                TimeWidget.this.popup.addPopupMenuListener(new PopupMenuListener() {
-                    @Override
-                    public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {
-                    }
-
-                    @Override
-                    public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {
-                    }
-
-                    @Override
-                    public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
-                        TimeWidget.this.setZone(null);
-                    }
-                });
+                TimeWidget.this.popup = JBPopupFactory.getInstance()
+                        .createComponentPopupBuilder(chooser, chooser.stf)
+                        .setCancelCallback(() -> {
+                            TimeWidget.this.setZone(null);
+                            return true;
+                        })
+                        .createPopup();
+                TimeWidget.this.popup.showInCenterOf(TimeWidget.this);
+//                TimeWidget.this.popup = new JBPopupMenu();
+//                TimeWidget.this.popup.add(chooser);
+//                TimeWidget.this.popup.show(TimeWidget.this, TimeWidget.this.getX(), TimeWidget.this.getY());
+//                TimeWidget.this.popup.addPopupMenuListener(new PopupMenuListener() {
+//                    @Override
+//                    public void popupMenuWillBecomeVisible(PopupMenuEvent popupMenuEvent) {}
+//                    @Override
+//                    public void popupMenuWillBecomeInvisible(PopupMenuEvent popupMenuEvent) {}
+//                    @Override
+//                    public void popupMenuCanceled(PopupMenuEvent popupMenuEvent) {
+//                        TimeWidget.this.setZone(null);
+//                    }
+//                });
             }
 
             @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-            }
+            public void mousePressed(MouseEvent mouseEvent) {}
 
             @Override
-            public void mouseReleased(MouseEvent mouseEvent) {
-            }
+            public void mouseReleased(MouseEvent mouseEvent) {}
 
             @Override
-            public void mouseEntered(MouseEvent mouseEvent) {
-            }
+            public void mouseEntered(MouseEvent mouseEvent) {}
 
             @Override
-            public void mouseExited(MouseEvent mouseEvent) {
-            }
+            public void mouseExited(MouseEvent mouseEvent) {}
         });
         this.task = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(this::update, 0, 20, TimeUnit.SECONDS);
     }
@@ -97,7 +97,7 @@ public class TimeWidget extends JLabel implements CustomStatusBarWidget {
     }
 
     Void setZone(String z) {
-        this.popup.setVisible(false);
+        this.popup.cancel();
         this.popup = null;
         if (z != null) {
             Settings.get().selectedZone = z;
