@@ -3,7 +3,7 @@
     <name>World Clock</name>
     <vendor email="fctorial@gmail.com">fctorial</vendor>
     <depends>com.intellij.modules.platform</depends>
-    <idea-version since-build="162" until-build="202.*" />
+    <idea-version since-build="193" />
 
     <description><![CDATA[
 Displays a clock widget in the bottom status bar. <br>
@@ -18,7 +18,6 @@ right click on a pinned zone to unpin it <br>
 
 times in pinned zones are displayed in the tooltip of this widget <br>
 ]]></description>
-    <change-notes>Use intellij speed search like project view</change-notes>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="Settings"/>

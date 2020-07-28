@@ -16,6 +16,7 @@ intellij {
     localPath "/mnt/DATA/software/idea-IU"
     plugins 'java'
     buildSearchableOptions.enabled = false
+    intellij.updateSinceUntilBuild = false
 }
 
 

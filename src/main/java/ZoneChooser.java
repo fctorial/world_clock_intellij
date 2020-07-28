@@ -30,18 +30,6 @@ public class ZoneChooser extends JPanel {
     ZoneChooser(Function<String, Void> cb) {
         this.cb = cb;
         this.zonesList = new JBList<>();
-        this.zonesList.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent ev) {
-                if (ev.getKeyChar() == '\n') {
-                    cb.apply(zonesList.getSelectedValue());
-                }
-            }
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {}
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {}
-        });
         this.zonesList.setListData(timezones);
         this.zonesList.addMouseListener(new MouseListener() {
             @Override
@@ -88,7 +76,7 @@ public class ZoneChooser extends JPanel {
             }
 
             void filter() {
-                var qf = stf.getText();
+                var qf = stf.getText().toLowerCase();
                 if (qf.equals("")) {
                     zonesList.setListData(timezones);
                 } else {
@@ -97,7 +85,7 @@ public class ZoneChooser extends JPanel {
                     for (var tz : timezones) {
                         var accept = true;
                         for (var q : qa) {
-                            accept = accept && tz.contains(q);
+                            accept = accept && tz.toLowerCase().contains(q);
                         }
                         if (accept) {
                             results.add(tz);
@@ -107,7 +95,32 @@ public class ZoneChooser extends JPanel {
                 }
             }
         });
-        this.stf.setPreferredSize(new Dimension(200, 20));
+        stf.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent ev) {
+                var to_select = 0;
+                var curr = zonesList.getSelectedIndex();
+                var key = ev.getKeyCode();
+                if (key == KeyEvent.VK_UP) {
+                    to_select = curr-1;
+                } else if (key == KeyEvent.VK_DOWN) {
+                    to_select = curr+1;
+                } else if (key == KeyEvent.VK_ENTER) {
+                    if (curr != -1) {
+                        cb.apply(zonesList.getSelectedValue());
+                    }
+                    return;
+                } else {
+                    return;
+                }
+                zonesList.setSelectedIndex(to_select);
+            }
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {}
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {}
+        });
+        stf.setPreferredSize(new Dimension(200, 30));
 
         this.pinned = new JBList<>();
         this.pinned.addMouseListener(new MouseListener() {
@@ -136,18 +149,6 @@ public class ZoneChooser extends JPanel {
             public void mouseExited(MouseEvent mouseEvent) {}
         });
         pinned.setListData(listToArray(Settings.get().pinnedZones));
-        pinned.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent ev) {
-                if (ev.getKeyChar() == '\n') {
-                    cb.apply(pinned.getSelectedValue());
-                }
-            }
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {}
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {}
-        });
 
         this.setLayout(null);
         this.foC = new JBScrollPane(zonesList);
