@@ -13,7 +13,7 @@ dependencies {
 }
 
 intellij {
-    localPath "/mnt/DATA/software/idea-IU"
+    localPath "/mnt/DATA/software/idea-IC"
     plugins 'java'
     buildSearchableOptions.enabled = false
     intellij.updateSinceUntilBuild = false
